@@ -15,19 +15,17 @@ import java.sql.SQLException;
 @WebServlet(name = "RegistrationServlet", urlPatterns = "/reg")
 public class RegistrationServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String login = request.getParameter("login");
         String password = request.getParameter("password");
         User user = new User(login, password);
         try {
             Database database = new Database();
-            database.saveUserToDatabase(login, password);
-        } catch (ClassNotFoundException e) {
+            database.saveUserToDatabase(user);
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-
         }
-        request.setAttribute("user", user);
+        request.getSession().setAttribute("user", user);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("profile.jsp");
         requestDispatcher.forward(request, response);
 
